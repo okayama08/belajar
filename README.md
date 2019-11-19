@@ -1,37 +1,63 @@
-## Welcome to GitHub Pages
+# ![Okayama logo](https://forkdelta.github.io/next/favicon-32x32.png) OKAYAMA
 
-You can use the [editor on GitHub](https://github.com/okayama08/belajar/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+[![Build Status](https://travis-ci.org/forkdelta/backend-replacement.svg?branch=master)](https://travis-ci.org/forkdelta/backend-replacement)
+[![Known Vulnerabilities](https://snyk.io/test/github/forkdelta/backend-replacement/badge.svg)](https://snyk.io/test/github/forkdelta/backend-replacement)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/forkdelta/tokenbase/issues)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+This repository hosts the source code of ForkDelta backend. The backend provides off-chain orderbook functionality and an API to get a filtered view of Ethereum blockchain events on an [EtherDelta-like contract](https://www.reddit.com/r/EtherDelta/comments/6kdiyl/smart_contract_overview/).
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Best way to learn about a system is to read the source code. Start with a look at [docker-compose.yml](docker-compose.yml).
 
-```markdown
-Syntax highlighted code block
+## API
 
-# Header 1
-## Header 2
-### Header 3
+For information and documentation on ForkDelta's API, look here: https://github.com/forkdelta/backend-replacement/tree/master/docs/api
 
-- Bulleted
-- List
+## Developing
 
-1. Numbered
-2. List
+### Setting up a development environment
+Requirements:
+* Some sort of shell environment
+* A reasonably recent version of Docker (>= 17.06, ideally 17.12)
+* docker-compose (= 1.18)
+* Basic familiarity with Docker keywords: image, container (https://docs.docker.com/get-started/#docker-concepts)
 
-**Bold** and _Italic_ and `Code` text
+Setup:
+1. Clone the repo (git clone https://github.com/forkdelta/backend-replacement.git)
+2. Navigate to the root of the working copy, where the README file is.
+3. Copy `default.env` file to `.env` in root.
+4. Uncomment the `COMPOSE_FILE=` line in `.env` to enable mounting of working copy code into the containers.
+4. Build a Docker image containing our backend code: `docker-compose build contract_observer`
+5. Create the database and migrate it to the latest schema: `docker-compose run contract_observer alembic upgrade head`
+6. Run the backend systems: `docker-compose up`. You can shut everything down with Ctrl+C at any time.
 
-[Link](url) and ![Image](src)
-```
+Tips:
+* There are multiple containers running our backend code: `contract_observer`, `etherdelta_observer`, `websocket_server`.
+* Running `docker-compose build <service-name>` for any of the above builds the same image.
+* `docker-compose build contract_observer` builds an image, copying the code and installing Python libraries in our dependencies.
+  You have to rebuild any time the dependencies change; however, in development, code in the working copy is mounted into the container,
+  so it's enough to restart the container (with `docker-compose restart <service-name>`) to apply changes for a given service.
+* You can inspect the list of currently running containers with `docker-compose ps`.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Contributors
+* [Arseniy Ivanov](https://github.com/freeatnet)
+* [Jonathon Dunford](https://github.com/JonathonDunford)
 
-### Jekyll Themes
+## License
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/okayama08/belajar/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Copyright (C) 2018, Arseniy Ivanov and Okayama Contributors
 
-### Support or Contact
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+See the full [license.](LICENSE)
